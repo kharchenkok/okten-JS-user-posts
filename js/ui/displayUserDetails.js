@@ -1,33 +1,108 @@
+import {
+    formatPhoneForDisplay,
+    formatPhoneForHref
+} from "../helpers/formatPhoneNumber.js";
+
 export function displayUserDetails(user,gender,parentElement) {
-    console.log('user', user);
-    console.log('gender', gender);
-    const img = document.createElement('img');
-    img.src = `https://randomuser.me/api/portraits/${gender}/${user.id}.jpg`;
-    img.alt = `${user.name}'s picture`;
-    img.classList.add('user-image');
-    parentElement.appendChild(img);
+   
+    const userDetailsMarkup = `
+        <div class="user-details">
+            <div class="user-image">
+                <img src="https://randomuser.me/api/portraits/${gender}/${user.id}.jpg" alt="${user.name} photo" width="300" height="300">
+            </div>  
+            <div class="user-info">
+                <h2><span>${user.id} - ${user.name}</span>(${user.username})</h2>
+                <ul class="user-contact">
+                   
+                     ${Object.keys(user).map(key => {
+                         
+                            if (key === "email") {
+                                const email = user[key];
+                                if (email) {
+                                    return `
+                                                    <li>
+                                                        <span>${key}:</span> 
+                                                       <a href="mailto:${email}">${email}</a>
+                                                    </li>
+                                                `;
+                                }
+
+                                
+                            } else if (key === "phone") {
+                                const phone = user[key];
+                                if (phone) {
+                                    const phoneHref = formatPhoneForHref(phone);
+                                    const phoneDisplay = formatPhoneForDisplay(phone);
+                                    return `
+                                                    <li>
+                                                        <span>${key}:</span>  
+                                                        <a href="tel:+${phoneHref}">${formatPhoneForDisplay(phoneDisplay)}</a>
+                                                    </li>
+                                                `;
+                                }
+    
+                                
+                            } else if(key === "address"){
+                                const address = user[key];
+                                if (address) {
+                                    return `
+                                                    <li>
+                                                        <span>${key}:</span>  
+                                                        <a href="https://www.google.com/maps?q=${address.geo.lat},${address.geo.lng}" target="_blank">
+                                                             ${address.street}, ${address.suite}, ${address.city}, ${address.zipcode}
+                                                        </a>
+                                                        
+                                                    </li>
+                                                `;
+                                }
+                            }else if(key === "website"){
+                                const website = user[key];
+                                if (website) {
+                                    const websiteUrl = website.startsWith('http') ? website : `https://${website}`;
+                                    return `
+                                                    <li>
+                                                        <span>${key}:</span>  
+                                                        <a href="${websiteUrl}" target="_blank">
+                                                             ${website}
+                                                        </a>
+                                                        
+                                                    </li>
+                                                `;
+                                }
+                            }else if (key === "company") {
+                                const company = user[key];
+                                if (company) {
+                                    return `
+                                                    <li>
+                                                       <span>${key}:</span> 
+                                                        ${company.name} (${company.catchPhrase})
+                                                        ${company.bs ? `
+                                                            <div>
+                                                                <span>Business Specialty:</span>
+                                                                <ul>
+                                                                    ${company.bs.split(' ').map(bsItem => {
+                                                                                return `<li>${bsItem.trim()}</li>`;
+                                                                            }).join('')}
+                                                                </ul>
+                                                            </div>
+                                                        ` : ''}
+                                                    </li>
+                                                `;
+                                }
+                            }else if (key !== "id" && key !== "name" && key !== "username" && user[key]) {
+                                return `
+                                                <li>
+                                                     <span>${key}:</span> 
+                                                    ${user[key]}
+                                                </li>
+                                            `;
+                            }
+                        }).join('')}
+                
+                </ul>
+            </div>
+        </div>
+    `;
+    parentElement.insertAdjacentHTML('afterbegin', userDetailsMarkup);
 }
 
-// {
-//     "id": 1,
-//     "name": "Leanne Graham",
-//     "username": "Bret",
-//     "email": "Sincere@april.biz",
-//     "address": {
-//     "street": "Kulas Light",
-//         "suite": "Apt. 556",
-//         "city": "Gwenborough",
-//         "zipcode": "92998-3874",
-//         "geo": {
-//         "lat": "-37.3159",
-//             "lng": "81.1496"
-//     }
-// },
-//     "phone": "1-770-736-8031 x56442",
-//     "website": "hildegard.org",
-//     "company": {
-//     "name": "Romaguera-Crona",
-//         "catchPhrase": "Multi-layered client-server neural-net",
-//         "bs": "harness real-time e-markets"
-// }
-// }
