@@ -6,12 +6,13 @@ import {
 export function displayUserDetails(user,gender,parentElement) {
    
     const userDetailsMarkup = `
+        <h1><span>${user.id} - ${user.name}</span>(${user.username})</h1>
         <div class="user-details">
             <div class="user-image">
                 <img src="https://randomuser.me/api/portraits/${gender}/${user.id}.jpg" alt="${user.name} photo" width="300" height="300">
             </div>  
             <div class="user-info">
-                <h2><span>${user.id} - ${user.name}</span>(${user.username})</h2>
+              
                 <ul class="user-contact">
                    
                      ${Object.keys(user).map(key => {

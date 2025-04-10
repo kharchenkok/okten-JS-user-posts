@@ -1,27 +1,40 @@
 import { fetchData } from './fetchData.js';
 
 export async function getAllUsers() {
-    return fetchData('/users');
+    try {
+        const data = await fetchData('/users');
+        if (!Array.isArray(data)) {
+            throw new Error('Invalid response format: expected array');
+        }
+        return data;
+    } catch (error) {
+        throw new Error(`Error getting users: ${error.message}`);
+    }
 }
 
+export async function getUserById(userId) {
+    try {
+        const user = await fetchData(`/users/${userId}`);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return user;
+    } catch (error) {
+        throw new Error(`Error getting user: ${error.message}`);
+    }
+}
 
-export async function determineGenderByFullName(firstName) {
-
+export async function getUserGender(firstName) {
     try {
         const response = await fetch(`https://api.genderize.io?name=${firstName}`);
-
         if (!response.ok) {
-            throw new Error("Error fetching data from Genderize API");
+            throw new Error('Error getting data from Genderize API');
         }
 
         const data = await response.json();
-
-        if (data.gender) {
-            return data.gender === 'male' ? 'men' : 'women';
-        } else {
-            return null;
-        }
+        return data.gender ? (data.gender === 'male' ? 'men' : 'women') : null;
     } catch (error) {
-        console.error("Error:", error);
+        console.warn('Error determining gender:', error);
+        return null;
     }
 }

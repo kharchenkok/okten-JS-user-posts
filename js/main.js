@@ -1,33 +1,36 @@
-import {getAllUsers} from "./services/usersService.js";
-import {displayAllUsers} from "./ui/displayAllUsers.js";
+import { getAllUsers } from "./services/usersService.js";
+import { displayAllUsers } from "./ui/displayAllUsers.js";
+import { displayErrorMessage } from "./ui/displayErrorMessage.js";
+import {displaySpinner} from "./ui/displaySpinner.js";
+
+// Get DOM elements
 const usersList = document.getElementById("usersList");
 
 
 
+// Main function
+async function allUsers() {
+    try {
+        // Add loading spinner
+        const spinner = displaySpinner();
+        usersList.appendChild(spinner);
 
-const allUsers= function (){
-    getAllUsers()
-        .then(users => {
-            const usersArr = users.map(user => ({id: user.id, name: user.name}));
-            displayAllUsers(usersArr, usersList);
-        })
-        .catch(error => console.error('Error in main:', error));
+        // Get users
+        const users = await getAllUsers();
+
+        // Remove spinner
+        spinner.remove();
+
+        // Display users
+        displayAllUsers(users, usersList);
+    } catch (error) {
+        usersList.innerHTML = '';
+        usersList.appendChild(displayErrorMessage(`Error loading users: ${error.message}`));
+        console.error('Error:', error);
+    }
 }
 
-// async function main() {
-//     try {
-//         const usersArr = (await getAllUsers()).map(user => ({id: user.id, name: user.name}));
-//
-//         displayAllUsers(usersArr, usersList);
-//     } catch (error) {
-//         console.error('Error in main:', error);
-//     }
-// }
-
-
-// main().catch(error => console.error('Error calling main:', error));
-
-
-allUsers();
+// Start the app
+allUsers().catch(error => console.error('Error:', error));
 
 

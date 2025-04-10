@@ -1,48 +1,70 @@
-import {
-    determineGenderByFullName,
-    getAllUsers
-} from "./services/usersService.js";
-import {extractFirstName} from "./helpers/extractFirstName.js";
-import {displayUserDetails} from "./ui/displayUserDetails.js";
-import {getPostsByID} from "./services/postsService.js";
-import {displayUserPosts} from "./ui/displayUserPosts.js";
-
+import { getUserById, getUserGender } from "./services/usersService.js";
+import { extractFirstName } from "./helpers/extractFirstName.js";
+import { displayUserDetails } from "./ui/displayUserDetails.js";
+import { getPostsByUserID } from "./services/postsService.js";
+import { displayUserPosts } from "./ui/displayUserPosts.js";
+import { displayErrorMessage } from "./ui/displayErrorMessage.js";
+import {displaySpinner} from "./ui/displaySpinner.js";
 
 const userWrapper = document.getElementById('userWrapper');
 const postsWrapper = document.getElementById('postsWrapper');
 
+async function userDetails() {
+    try {
+        // Add loading spinner
+        const spinner = displaySpinner();
+        userWrapper.appendChild(spinner);
 
- const userDetails = function () {
-    getAllUsers()
-        .then(async users => {
-            const userId = new URLSearchParams(location.search).get('id');
-            const user = users.find(user => user.id === parseInt(userId));
-            if (user) {
-                const userName = extractFirstName(user.name);
-                const gender = await determineGenderByFullName(userName);
-                displayUserDetails(user, gender, userWrapper);
-                const postsBtn = document.createElement('button');
-                postsBtn.textContent = 'Show Posts of current user';
-                postsBtn.addEventListener('click', async () => {
-                    // const posts = await getPostsByID(user.id);
-                    // displayUserPosts(posts, postsWrapper);
-                    if (postsWrapper.children.length === 0) {
-                        // Якщо пости ще не відображаються, завантажуємо їх
-                        const posts = await getPostsByID(user.id);
-                        displayUserPosts(posts, postsWrapper); // Функція, що додає пости в postsWrapper
-                        postsBtn.textContent = 'Hide Posts of current user'; // Змінюємо текст кнопки
-                    } else {
-                        // Якщо пости вже відображаються, очищуємо контейнер
-                        postsWrapper.innerHTML = ''; // Очищаємо пости
-                        postsBtn.textContent = 'Show Posts of current user'; // Відновлюємо початковий текст кнопки
-                    }
-                });
-                userWrapper.appendChild(postsBtn);
+        // Get user ID from URL
+        const userId = new URLSearchParams(location.search).get('id');
+        if (!userId) {
+            throw new Error('User ID not provided');
+        }
+
+        // Get user details
+        const user = await getUserById(parseInt(userId));
+        const userName = extractFirstName(user.name);
+        const gender = await getUserGender(userName);
+
+        // Remove spinner
+        spinner.remove();
+
+        // Display user details
+        displayUserDetails(user, gender, userWrapper);
+
+        // Create posts button
+        const postsBtn = document.createElement('button');
+        postsBtn.className = 'posts-btn';
+        postsBtn.textContent = 'Show Posts';
+
+        // Handle posts toggle
+        postsBtn.addEventListener('click', async () => {
+            if (postsWrapper.children.length === 0) {
+                const postsSpinner = displaySpinner();
+                postsWrapper.appendChild(postsSpinner);
+
+                try {
+                    const posts = await getPostsByUserID(user.id);
+                    postsSpinner.remove();
+                    displayUserPosts(posts, postsWrapper);
+                    postsBtn.textContent = 'Hide Posts';
+                } catch (error) {
+                    postsSpinner.remove();
+                    postsWrapper.appendChild(displayErrorMessage(`Error loading posts: ${error.message}`));
+                }
             } else {
-                console.error('User not found');
+                postsWrapper.innerHTML = '';
+                postsBtn.textContent = 'Show Posts';
             }
-        })
-        .catch(error => console.error('Error fetching users:', error));
+        });
+
+        userWrapper.appendChild(postsBtn);
+    } catch (error) {
+        userWrapper.innerHTML = '';
+        userWrapper.appendChild(displayErrorMessage(`Error loading user: ${error.message}`));
+        console.error('Error:', error);
+    }
 }
 
-userDetails();
+// Start the app
+userDetails().catch(error => console.error('Error:', error));
