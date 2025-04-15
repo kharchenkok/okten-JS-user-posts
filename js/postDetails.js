@@ -2,16 +2,21 @@ import {displaySpinner} from "./ui/displaySpinner.js";
 
 
 import {
-    getPostById,
+    getPostById, getPostCommentsById,
 
 } from "./services/postsService.js";
 
 import {
     displayErrorMessage
 } from "./ui/displayErrorMessage.js";
+import {getUserById} from "./services/usersService.js";
+import {displayUPostDetails} from "./ui/displayPostDetails.js";
+import {
+    displayPostComments
+} from "./ui/displayPostComments.js";
 
-const postWrapper = document.getElementById('postWrapper');
-const commentsWrapper = document.getElementById('commentsWrapper');
+const postsWrapper = document.getElementById('postsWrapper');
+const commentsList = document.getElementById('commentsList');
 
 
 
@@ -19,7 +24,7 @@ async function postDetails() {
     try {
         // Add loading spinner
         const spinner = displaySpinner();
-        postWrapper.appendChild(spinner);
+        postsWrapper.appendChild(spinner);
 
         // Get post ID from URL
         const postId = new URLSearchParams(location.search).get('id');
@@ -29,6 +34,10 @@ async function postDetails() {
 
         // Get post details
         const post = await getPostById(parseInt(postId));
+        const user = await getUserById(post.userId);
+        // Get comments
+        const comments = await getPostCommentsById(postId);
+        console.log(comments)
 
 
         // Remove spinner
@@ -36,11 +45,14 @@ async function postDetails() {
 
         console.log('post', post);
         // Display user details
-        // displayUserDetails(user, gender, userWrapper);
+        displayUPostDetails(post, user, postsWrapper);
+        // Display comments
+        displayPostComments(comments, commentsList);
+
 
     } catch (error) {
-        postWrapper.innerHTML = '';
-        postWrapper.appendChild(displayErrorMessage(`Error loading user: ${error.message}`));
+        postsWrapper.innerHTML = '';
+        postsWrapper.appendChild(displayErrorMessage(`Error loading user: ${error.message}`));
         console.error('Error:', error);
     }
 }
