@@ -16,7 +16,7 @@ import {
 } from "./ui/displayPostComments.js";
 
 const postsWrapper = document.getElementById('postsWrapper');
-const commentsList = document.getElementById('commentsList');
+const commentsWrapper = document.getElementById('commentsWrapper');
 
 
 
@@ -47,7 +47,7 @@ async function postDetails() {
         // Display user details
         displayUPostDetails(post, user, postsWrapper);
         // Display comments
-        displayPostComments(comments, commentsList);
+        displayPostComments(comments, commentsWrapper);
 
 
     } catch (error) {

@@ -13,7 +13,7 @@ async function allUsers() {
     try {
         // Add loading spinner
         const spinner = displaySpinner();
-        usersList.appendChild(spinner);
+        usersList.insertAdjacentElement('beforebegin', spinner);
 
         // Get users
         const users = await getAllUsers();
