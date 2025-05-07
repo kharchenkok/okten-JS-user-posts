@@ -1,8 +1,11 @@
 import { fetchData } from './fetchData.js';
+import { BASE_URL,GENDERIZE_API_URL,
+    GENDER_API_URL,
+    GENDER_API_KEY,RANDOM_USER_IMAGE_BASE_URL } from '../../constants/api.js';
 
 export async function getAllUsers() {
     try {
-        const data = await fetchData('/users');
+        const data = await fetchData('/users', BASE_URL);
         if (!Array.isArray(data)) {
             throw new Error('Invalid response format: expected array');
         }
@@ -14,7 +17,7 @@ export async function getAllUsers() {
 
 export async function getUserById(userId) {
     try {
-        const user = await fetchData(`/users/${userId}`);
+        const user = await fetchData(`/users/${userId}`, BASE_URL);
         if (!user) {
             throw new Error('User not found');
         }
@@ -24,35 +27,33 @@ export async function getUserById(userId) {
     }
 }
 
+
 export async function getUserGender(firstName) {
     try {
-        const response = await fetch(`https://api.genderize.io?name=${firstName}`);
+        const endpoint = `?name=${firstName}`;
+        const data = await fetchData(endpoint, GENDERIZE_API_URL);
 
-        if (response.status === 429) {
-            const retryAfter = response.headers.get('Retry-After');
-            if (retryAfter) {
-                console.warn(`Too many requests. Please wait ${retryAfter} seconds before retrying.`);
-                return null;
-            } else {
-                console.warn('Too many requests, but no Retry-After header found.');
-                return null;
-            }
-        }
-
-
-        if (!response.ok) {
-            throw new Error('Error getting data from Genderize API');
-        }
-
-        const data = await response.json();
         return data.gender ? (data.gender === 'male' ? 'men' : 'women') : null;
+    } catch (error) {
+        // Якщо Genderize API не працює (в т.ч. ліміт) — fallback
+        console.warn('Genderize API failed, falling back to Gender-API:', error.message);
+        return await getGenderFromGenderAPI(firstName);
     }
-    catch (error) {
-        console.warn('Error determining gender:', error);
+}
+
+async function getGenderFromGenderAPI(firstName) {
+    try {
+        const endpoint = `?name=${firstName}&key=${GENDER_API_KEY}`;
+        const data = await fetchData(endpoint, GENDER_API_URL);
+        console.log('Gender-API response success');
+
+        return data.gender ? (data.gender === 'male' ? 'men' : 'women') : null;
+    } catch (error) {
+        console.warn('Gender-API also failed:', error.message);
         return null;
     }
 }
 
 export function getUserImageUrl(userId, gender) {
-    return `https://randomuser.me/api/portraits/${gender}/${userId}.jpg`;
+    return `${RANDOM_USER_IMAGE_BASE_URL}/${gender}/${userId}.jpg`;
 }

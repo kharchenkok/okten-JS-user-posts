@@ -1,11 +1,9 @@
-import { BASE_URL } from '../../constants/api.js';
-
-export async function fetchData(endpoint) {
+export async function fetchData(endpoint,baseUrl) {
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
+        const response = await fetch(`${baseUrl}${endpoint}`, {
             signal: controller.signal,
             headers: {
                 'Accept': 'application/json'
