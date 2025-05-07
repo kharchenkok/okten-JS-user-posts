@@ -1,7 +1,6 @@
 import { fetchData } from './fetchData.js';
 import { BASE_URL,GENDERIZE_API_URL,
-    GENDER_API_URL,
-    GENDER_API_KEY,RANDOM_USER_IMAGE_BASE_URL } from '../config.js';
+    GENDER_API_URL,RANDOM_USER_IMAGE_BASE_URL } from '../config.js';
 
 export async function getAllUsers() {
     try {
@@ -43,7 +42,7 @@ export async function getUserGender(firstName) {
 
 async function getGenderFromGenderAPI(firstName) {
     try {
-        const endpoint = `?name=${firstName}&key=${GENDER_API_KEY}`;
+        const endpoint = `?name=${firstName}`;
         const data = await fetchData(endpoint, GENDER_API_URL);
         console.log('Gender-API response success');
 
