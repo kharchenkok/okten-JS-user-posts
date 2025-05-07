@@ -44,12 +44,14 @@ async function postDetails() {
         // Remove spinner
         spinner.remove();
 
+        // Add breadcrumbs
         const breadcrumbs = displayBreadcrumbs([
             { label: 'Home', href: '../index.html' },
             { label: user.name, href: `user-details.html?id=${user.id}` },
             { label: 'Post' } // поточна сторінка
         ]);
         postWrapper.parentNode.prepend(breadcrumbs);
+
         // Display user details
         displayUPostDetails(post, user, postWrapper);
         // Display comments

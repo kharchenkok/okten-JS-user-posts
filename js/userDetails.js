@@ -35,6 +35,7 @@ async function userDetails() {
         // Remove spinner
         spinner.remove();
 
+        // Add breadcrumbs
         const breadcrumbs = displayBreadcrumbs([
             { label: 'Home', href: '../index.html' },
             { label: user.name }
