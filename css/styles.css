@@ -288,8 +288,18 @@ h1::after {
 }
 .user-contact li:last-child div{
     display: flex;
+    flex-direction: column;
     gap: 5px;
-    align-items: center;
+    align-items: flex-start;
+}
+.bs-list{
+    display: flex;
+    gap: 10px;
+}
+.bs-list li{
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #efeffd;
 }
 
 
@@ -385,15 +395,7 @@ h1::after {
     opacity: 0.15;
 }
 
-.bs-list{
-    display: flex;
-    gap: 10px;
-}
-.bs-list li{
-    padding: 5px 10px;
-    border-radius: 20px;
-    background: #efeffd;
-}
+
 
 
 .breadcrumbs {
