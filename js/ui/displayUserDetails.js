@@ -2,6 +2,9 @@ import {
     formatPhoneForDisplay,
     formatPhoneForHref
 } from "../helpers/formatPhoneNumber.js";
+import {
+    capitalizeFirstLetter
+} from "../helpers/capitalizeFirstLetter.js";
 
 export function displayUserDetails(user,gender,parentElement) {
    
@@ -22,7 +25,7 @@ export function displayUserDetails(user,gender,parentElement) {
                                 if (email) {
                                     return `
                                                     <li>
-                                                        <span>${key}:</span> 
+                                                        <span>${capitalizeFirstLetter(key)}:</span> 
                                                        <a href="mailto:${email}">${email}</a>
                                                     </li>
                                                 `;
@@ -36,7 +39,7 @@ export function displayUserDetails(user,gender,parentElement) {
                                     const phoneDisplay = formatPhoneForDisplay(phone);
                                     return `
                                                     <li>
-                                                        <span>${key}:</span>  
+                                                        <span>${capitalizeFirstLetter(key)}:</span>  
                                                         <a href="tel:+${phoneHref}">${formatPhoneForDisplay(phoneDisplay)}</a>
                                                     </li>
                                                 `;
@@ -48,7 +51,7 @@ export function displayUserDetails(user,gender,parentElement) {
                                 if (address) {
                                     return `
                                                     <li>
-                                                        <span>${key}:</span>  
+                                                        <span>${capitalizeFirstLetter(key)}:</span>  
                                                         <a href="https://www.google.com/maps?q=${address.geo.lat},${address.geo.lng}" target="_blank">
                                                              ${address.street}, ${address.suite}, ${address.city}, ${address.zipcode}
                                                         </a>
@@ -62,7 +65,7 @@ export function displayUserDetails(user,gender,parentElement) {
                                     const websiteUrl = website.startsWith('http') ? website : `https://${website}`;
                                     return `
                                                     <li>
-                                                        <span>${key}:</span>  
+                                                        <span>${capitalizeFirstLetter(key)}:</span>  
                                                         <a href="${websiteUrl}" target="_blank">
                                                              ${website}
                                                         </a>
@@ -75,12 +78,12 @@ export function displayUserDetails(user,gender,parentElement) {
                                 if (company) {
                                     return `
                                                     <li>
-                                                       <span>${key}:</span> 
+                                                       <span>${capitalizeFirstLetter(key)}:</span> 
                                                         ${company.name} (${company.catchPhrase})
                                                         ${company.bs ? `
                                                             <div>
                                                                 <span>Business Specialty:</span>
-                                                                <ul>
+                                                                <ul class="bs-list">
                                                                     ${company.bs.split(' ').map(bsItem => {
                                                                                 return `<li>${bsItem.trim()}</li>`;
                                                                             }).join('')}
@@ -93,7 +96,7 @@ export function displayUserDetails(user,gender,parentElement) {
                             }else if (key !== "id" && key !== "name" && key !== "username" && user[key]) {
                                 return `
                                                 <li>
-                                                     <span>${key}:</span> 
+                                                     <span>${capitalizeFirstLetter(key)}:</span> 
                                                     ${user[key]}
                                                 </li>
                                             `;

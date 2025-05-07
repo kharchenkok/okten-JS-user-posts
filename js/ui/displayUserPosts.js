@@ -1,3 +1,7 @@
+import {
+    capitalizeFirstLetter
+} from "../helpers/capitalizeFirstLetter.js";
+
 export function displayUserPosts(posts, parentElement) {
     parentElement.innerHTML = '';
 
@@ -7,7 +11,7 @@ export function displayUserPosts(posts, parentElement) {
     posts.forEach(post => {
         const itemMarkup = `
             <li class="post-card ">
-                <a href="post-details.html?id=${post.id}" class="post-link">${post.title}</a>
+                <a href="post-details.html?id=${post.id}" class="post-link">${capitalizeFirstLetter(post.title)}</a>
             </li>
         `;
         list.insertAdjacentHTML('beforeend', itemMarkup);

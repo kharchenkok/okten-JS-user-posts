@@ -1,3 +1,7 @@
+import {
+    capitalizeFirstLetter
+} from "../helpers/capitalizeFirstLetter.js";
+
 export function displayPostComments(comments, parentElement) {
     parentElement.innerHTML = '';
     const title = document.createElement('h2');
@@ -11,7 +15,7 @@ export function displayPostComments(comments, parentElement) {
             <li class="comment-card ">
                 <h3>${comment.name}</h3>
                 <p>
-                    ${comment.body}
+                    ${capitalizeFirstLetter(comment.body)}
                 </p>
                 <a href="mailto:${comment.email}">${comment.email}</a>
             </li>

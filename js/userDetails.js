@@ -5,6 +5,7 @@ import { getPostsByUserID } from "./services/postsService.js";
 import { displayUserPosts } from "./ui/displayUserPosts.js";
 import { displayErrorMessage } from "./ui/displayErrorMessage.js";
 import {displaySpinner} from "./ui/displaySpinner.js";
+import {displayBreadcrumbs} from "./ui/displayBreadcrumbs.js";
 
 const userWrapper = document.getElementById('userWrapper');
 const postsWrapper = document.getElementById('postsWrapper');
@@ -29,12 +30,17 @@ async function userDetails() {
         // Remove spinner
         spinner.remove();
 
+        const breadcrumbs = displayBreadcrumbs([
+            { label: 'Home', href: '../index.html' },
+            { label: user.name }
+        ]);
+        userWrapper.parentNode.prepend(breadcrumbs);
         // Display user details
         displayUserDetails(user, gender, userWrapper);
 
         // Create posts button
         const postsBtn = document.createElement('button');
-        postsBtn.className = 'posts-btn';
+        postsBtn.classList.add('btn','posts-btn');
         postsBtn.textContent = 'Show Posts';
 
         // Handle posts toggle
