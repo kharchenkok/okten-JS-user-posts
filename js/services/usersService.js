@@ -27,13 +27,27 @@ export async function getUserById(userId) {
 export async function getUserGender(firstName) {
     try {
         const response = await fetch(`https://api.genderize.io?name=${firstName}`);
+
+        if (response.status === 429) {
+            const retryAfter = response.headers.get('Retry-After');
+            if (retryAfter) {
+                console.warn(`Too many requests. Please wait ${retryAfter} seconds before retrying.`);
+                return null;
+            } else {
+                console.warn('Too many requests, but no Retry-After header found.');
+                return null;
+            }
+        }
+
+
         if (!response.ok) {
             throw new Error('Error getting data from Genderize API');
         }
 
         const data = await response.json();
         return data.gender ? (data.gender === 'male' ? 'men' : 'women') : null;
-    } catch (error) {
+    }
+    catch (error) {
         console.warn('Error determining gender:', error);
         return null;
     }

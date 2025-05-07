@@ -30,7 +30,7 @@ async function userDetails() {
         const user = await getUserById(parseInt(userId));
         const userName = extractFirstName(user.name);
         const gender = await getUserGender(userName);
-        const avatarUrl = getUserImageUrl(userId, gender)
+        const avatarUrl = gender ? getUserImageUrl(userId, gender) : '../image/no-profile.png';
 
         // Remove spinner
         spinner.remove();
