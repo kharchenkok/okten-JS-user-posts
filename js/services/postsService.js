@@ -1,5 +1,5 @@
 import { fetchData } from './fetchData.js';
-import {BASE_URL} from "../../constants/api.js";
+import {BASE_URL} from "../config.js";
 
 export async function getPostsByUserID(userId) {
     return fetchData(`/users/${userId}/posts`,BASE_URL);

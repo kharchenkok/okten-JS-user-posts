@@ -1,7 +1,7 @@
 import { fetchData } from './fetchData.js';
 import { BASE_URL,GENDERIZE_API_URL,
     GENDER_API_URL,
-    GENDER_API_KEY,RANDOM_USER_IMAGE_BASE_URL } from '../../constants/api.js';
+    GENDER_API_KEY,RANDOM_USER_IMAGE_BASE_URL } from '../config.js';
 
 export async function getAllUsers() {
     try {
