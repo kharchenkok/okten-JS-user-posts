@@ -1,4 +1,8 @@
-import { getUserById, getUserGender } from "./services/usersService.js";
+import {
+    getUserById,
+    getUserGender,
+    getUserImageUrl
+} from "./services/usersService.js";
 import { extractFirstName } from "./helpers/extractFirstName.js";
 import { displayUserDetails } from "./ui/displayUserDetails.js";
 import { getPostsByUserID } from "./services/postsService.js";
@@ -26,6 +30,7 @@ async function userDetails() {
         const user = await getUserById(parseInt(userId));
         const userName = extractFirstName(user.name);
         const gender = await getUserGender(userName);
+        const avatarUrl = getUserImageUrl(userId, gender)
 
         // Remove spinner
         spinner.remove();
@@ -36,7 +41,7 @@ async function userDetails() {
         ]);
         userWrapper.parentNode.prepend(breadcrumbs);
         // Display user details
-        displayUserDetails(user, gender, userWrapper);
+        displayUserDetails(user, gender,avatarUrl, userWrapper);
 
         // Create posts button
         const postsBtn = document.createElement('button');

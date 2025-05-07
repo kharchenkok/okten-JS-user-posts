@@ -38,3 +38,7 @@ export async function getUserGender(firstName) {
         return null;
     }
 }
+
+export function getUserImageUrl(userId, gender) {
+    return `https://randomuser.me/api/portraits/${gender}/${userId}.jpg`;
+}
